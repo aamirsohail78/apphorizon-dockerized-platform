@@ -1,70 +1,74 @@
-## demo app - developing with Docker
+# AppHorizon - Dockerized Demo App
 
-This demo app shows a simple user profile app set up using 
-- index.html with pure js and css styles
-- nodejs backend with express module
-- mongodb for data storage
+A simple user profile application using Node.js, Express, MongoDB, and Docker. All components are containerized for easy deployment.
 
-All components are docker-based
+---
 
-### With Docker
+## Features
+- Frontend: `index.html` with pure JS & CSS
+- Backend: Node.js + Express
+- Database: MongoDB
+- Supports Docker and Docker Compose setups
 
-#### To start the application
+---
 
-Step 1: Create docker network
+## Running the App
 
-    docker network create mongo-network 
+### Using Docker
+1. **Create network (optional):**  
+```bash
+docker network create mongo-network
+# AppHorizon - Dockerized Demo App
 
-Step 2: start mongodb 
+A simple user profile application using Node.js, Express, MongoDB, and Docker. All components are containerized for easy deployment.
 
-    docker run -d -p 27017:27017 -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=password --name mongodb --net mongo-network mongo    
+---
 
-Step 3: start mongo-express
-    
-    docker run -d -p 8081:8081 -e ME_CONFIG_MONGODB_ADMINUSERNAME=admin -e ME_CONFIG_MONGODB_ADMINPASSWORD=password --net mongo-network --name mongo-express -e ME_CONFIG_MONGODB_SERVER=mongodb mongo-express   
+## Features
+- Frontend: `index.html` with pure JS & CSS
+- Backend: Node.js + Express
+- Database: MongoDB
+- Supports Docker and Docker Compose setups
 
-_NOTE: creating docker-network in optional. You can start both containers in a default network. In this case, just emit `--net` flag in `docker run` command_
+---
 
-Step 4: open mongo-express from browser
+## Running the App
 
-    http://localhost:8081
+### Using Docker
+1. **Create network (optional):**  
+```bash
+docker network create mongo-network
 
-Step 5: create `user-account` _db_ and `users` _collection_ in mongo-express
+2.Start MongoDB:
 
-Step 6: Start your nodejs application locally - go to `apphorizon/app` directory of project 
+docker run -d -p 27017:27017 \
+  -e MONGO_INITDB_ROOT_USERNAME=admin \
+  -e MONGO_INITDB_ROOT_PASSWORD=password \
+  --name mongodb --net mongo-network mongo
+3.Start Mongo Express:
 
-    npm install 
-    node server.js
-    
-Step 7: Access you nodejs application UI from browser
+docker run -d -p 8081:8081 \
+  -e ME_CONFIG_MONGODB_ADMINUSERNAME=admin \
+  -e ME_CONFIG_MONGODB_ADMINPASSWORD=password \
+  -e ME_CONFIG_MONGODB_SERVER=mongodb \
+  --name mongo-express --net mongo-network mongo-express
+4.Open Mongo Express: http://localhost:8081
+ and create database user-account with collection users.
+5.Start Node.js backend:
 
-    http://localhost:3000
+cd apphorizon/app
+npm install
+node server.js
+6.Access app: http://localhost:3000
 
-### With Docker Compose
+Using Docker Compose
+docker-compose -f docker-compose.yaml up
 
-#### To start the application
 
-Step 1: start mongodb and mongo-express
+Mongo Express: http://localhost:8080
 
-    docker-compose -f docker-compose.yaml up
-    
-_You can access the mongo-express under localhost:8080 from your browser_
-    
-Step 2: in mongo-express UI - create a new database "apphorizon-db"
+Create database apphorizon-db and collection users
 
-Step 3: in mongo-express UI - create a new collection "users" in the database "apphorizon-db"       
-    
-Step 4: start node server 
-
-    npm install
-    node server.js
-    
-Step 5: access the nodejs application from browser 
-
-    http://localhost:3000
-
-#### To build a docker image from the application
-
-    docker build -t my-app:1.0 .       
-    
-The dot "." at the end of the command denotes location of the Dockerfile.
+Start Node.js as above
+7.Build Docker Image
+docker build -t my-app:1.0 .
