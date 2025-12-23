@@ -1,0 +1,196 @@
+\<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AppHorizon - User Profile</title>
+<style>
+    body {
+    margin: 0;
+    padding: 0;
+    background-color: #1a1a1a; /* dark grey / black */
+    font-family: Arial, sans-serif;
+    color: white; /* ensures text is readable */
+ 
+    }
+
+    header {
+        background-color: #4CAF50;
+        color: white;
+        padding: 20px 0;
+        text-align: center;
+    }
+
+    header img {
+        height: 70px;
+    }
+
+    .container {
+    margin: 30px auto;
+    width: 400px;
+    padding: 20px;
+    background-color: rgba(50, 50, 50, 0.8); /* slightly lighter than page */
+    border-radius: 10px;
+    text-align: center;
+    color: #ffffff;  /* ensure text inside container is white */
+}
+
+    .container h1 {
+        text-align: center;
+        margin-bottom: 40px;
+        color: #FFFFFF;
+    }
+
+    img.profile-pic {
+        display: block;
+        margin: 0 auto 20px auto;
+        width: 120px;
+        height: 120px;
+        border-radius: 25%;
+        margin-bottom: 20px;
+        object-fit: cover;
+    }
+
+    .field {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+
+    .field h3 {
+        margin: 0;
+        font-weight: normal;
+        color: #555;
+    }
+
+    input {
+        width: 100%;
+        padding: 10px;
+        margin: 8px 0;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+    }
+
+    button {
+        width: 100%;
+        padding: 12px;
+        border-radius: 6px;
+        border: none;
+        background-color: #4CAF50;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    button:hover {
+        background-color: #45a049;
+    }
+
+    footer {
+        text-align: center;
+        padding: 15px;
+        background: #f0f0f0;
+        margin-top: 30px;
+        color: #333;
+    }
+
+    #container-edit {
+        display: none;
+    }
+
+footer {
+    background-color: #d3d3d3;  /* light grey background */
+    color: #000;                /* black text */
+    text-align: center;
+    padding: 50px 0;            /* height of footer */
+    font-size: 30px;             /* increase text size if needed */
+    font-weight: bold;
+    margin-top: 30px;
+}
+
+
+</style>
+</head>
+<body>
+
+
+<header>
+    <img src="images/logo.png" alt="AppHorizon Logo">
+</header>
+ 
+
+<div class="container" id="container">
+    <img src="images/logo.png" alt="Logo" style="width:100px; margin-bottom:20px;">
+    <h1>User Profile</h1>
+    <img src="images/profile-1.jpg" alt="user-profile" id="profile-pic">
+    <span>Name: </span><h3 id="name">Sam Fisher</h3>
+    <hr />
+    <span>Email: </span><h3 id="email">Samuelfisher83@example.com</h3>
+    <hr />
+    <span>Interests: </span><h3 id="interests">programming</h3>
+    <hr />
+    <button class='button' onclick="updateProfile()">Edit Profile</button>
+</div>
+
+
+<div class="container" id="container-edit">
+    <h1>User Profile</h1>
+    <img class="profile-pic" src="profile-picture" alt="user-profile">
+    <div class="field"><span>Name:</span><input type="text" id="input-name"></div>
+    <div class="field"><span>Email:</span><input type="email" id="input-email"></div>
+    <div class="field"><span>Interests:</span><input type="text" id="input-interests"></div>
+    <button onclick="handleUpdateProfileRequest()">Update Profile</button>
+</div>
+
+<footer>
+   <p>&copy; 2025 AppHorizon. All rights reserved. | Experience next-gen user interface & secure profile management - by Mohammed.Amair Sohail.</p>
+
+</footer>
+
+<script>
+(async function init() {
+    const response = await fetch('http://localhost:3000/get-profile');
+    const user = await response.json();
+
+    document.getElementById('name').textContent = user.name || 'Sam Fisher';
+    document.getElementById('email').textContent = user.email || 'samuelfisher@cia.com';
+    document.getElementById('interests').textContent = user.interests || 'covert ops';
+
+    document.getElementById('container').style.display = 'block';
+})();
+
+async function handleUpdateProfileRequest() {
+    const payload = {
+        name: document.getElementById('input-name').value,
+        email: document.getElementById('input-email').value,
+        interests: document.getElementById('input-interests').value
+    };
+
+    const response = await fetch('http://localhost:3000/update-profile', {
+        method: "POST",
+        headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+        body: JSON.stringify(payload)
+    });
+    const jsonResponse = await response.json();
+
+    document.getElementById('name').textContent = jsonResponse.name;
+    document.getElementById('email').textContent = jsonResponse.email;
+    document.getElementById('interests').textContent = jsonResponse.interests;
+
+    document.getElementById('container').style.display = 'block';
+    document.getElementById('container-edit').style.display = 'none';
+}
+
+function updateProfile() {
+    document.getElementById('input-name').value = document.getElementById('name').textContent;
+    document.getElementById('input-email').value = document.getElementById('email').textContent;
+    document.getElementById('input-interests').value = document.getElementById('interests').textContent;
+
+    document.getElementById('container').style.display = 'none';
+    document.getElementById('container-edit').style.display = 'block';
+}
+</script>
+
+</body>
+</html>
